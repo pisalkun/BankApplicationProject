@@ -1,0 +1,31 @@
+# --- Compiled Java Files ---
+# We don't push these because they are generated from your .java files
+*.class
+*.jar
+*.war
+
+# --- Build Directories ---
+# Maven and Gradle use these to store build output
+target/
+bin/
+build/
+out/
+
+# --- LazyVim / Neovim / Editor Stuff ---
+# This ignores swap files and undo history created by Neovim
+.netrwhist
+apps.pyc
+__pycache__/
+*.swp
+*.swo
+undo/
+.DS_Store
+
+# --- IDE Specifics ---
+# In case you ever open this in VS Code or IntelliJ
+.vscode/
+.idea/
+*.iml
+
+# --- Logs ---
+*.log
