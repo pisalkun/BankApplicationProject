@@ -1,94 +1,121 @@
 package com.example.app.model;
 
 public class Account {
-  private String AccountHolder;
-  private String AccountNumber;
-  private double Balance;
-  private String Password;
+  private String accountHolderName;
+  private String accountNumber;
+  private double balance;
+  private String password;
 
   private static String passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
+  private static String stringRegex = "^[+-]?\\d*(\\.\\d+)?$";
 
-  public Account(String AccountHolder, String AccountNumber, double initializeBalance, String Password) {
-    if (!isValidPassword(Password)) {
-      System.out.println("ERROR: Incorrect password please change");
-      return;
+  // Constructor
+  public Account(String accountHolderName, String accountNumber, double initializeBalance, String password) {
+    if (!isValidPassword(password)) {
+      throw new IllegalArgumentException("Invalid password format");
     }
-    this.Password = Password;
-    this.AccountHolder = AccountHolder;
-    this.AccountNumber = AccountNumber;
-    this.Balance = initializeBalance;
+    this.password = password;
+    this.accountHolderName = accountHolderName;
+    this.accountNumber = accountNumber;
+    this.balance = initializeBalance;
   }
 
-  // GETTER FOR VIEW {data}
+  // Getter
   public String getAccountHolder() {
-    return AccountHolder;
+    return accountHolderName;
   }
 
   public String getAccountNumber() {
-    return AccountNumber;
+    return accountNumber;
   }
 
   public double getBalance() {
-    return Balance;
+    return balance;
   }
 
-  // METHOD FOR MODIFY VALUE {data}
-  public void Deposit(double amount) {
-    if (!isValidPassword(Password)) {
-      System.out.println("ERROR: User dosn't exist!");
-      return;
+  // Deposit method
+  public void Deposit(String inputAmount, String inputPassword) {
+
+    authentication(inputPassword);
+
+    if (!inputAmount.matches(stringRegex)) {
+      throw new IllegalArgumentException("Amount should be number only!");
     }
+    double amount = Double.parseDouble(inputAmount);
     if (!(amount > 0)) {
-      System.out.println("Desposited fail please  insert correct value!");
+      throw new IllegalArgumentException("Amount should be positive number!");
     }
 
-    Balance += amount;
-    System.out.println("Successfully deposited: " + amount);
+    balance += amount;
+
   }
 
-  public void Withdraw(double amount) {
-    if (!isValidPassword(Password)) {
-      System.out.println("ERROR: User doesn't exist!");
-      return;
+  // Withdraw method
+  public void Withdraw(String inputAmount, String inputPassword) {
+
+    authentication(inputPassword);
+    if (!inputPassword.matches(stringRegex)) {
+      throw new IllegalArgumentException("Amount should be number only!");
     }
-    if (!(amount > 0 && amount <= Balance)) {
-      System.out.println("Withdraw fail please insert correct value!");
-      return;
+    double amount = Double.parseDouble(inputAmount);
+    if (amount <= 0) {
+      throw new IllegalArgumentException("Amount should be positive number!");
     }
 
-    Balance -= amount;
-    System.out.println("Successfully withdraw: " + amount);
+    if (amount > balance) {
+      throw new IllegalArgumentException("Insuffucient balane!");
+    }
+
+    balance -= amount;
   }
 
+  // Check balane method
   public void ShowBalance(String inputPassword) {
-    if (!isValidPassword(Password)) {
-      System.out.println("ERROR: User doesn't exist!");
-      return;
-    }
-    if (!Password.equals(inputPassword)) {
-      System.out.println("Incorrect password can not view balance.");
-      return;
-    }
 
-    System.out.println("Amount: " + getBalance());
+    authentication(inputPassword);
+
+    System.out.println("Amount: " + getBalance() + "$");
+
   }
 
-  public void ResetPassword(String Password, String newPassword) {
+  // accountHolderName setter
+  public void SetAccountHolderName(String accountHolderName, String inputPassword) {
+
+    authentication(inputPassword);
+
+    this.accountHolderName = accountHolderName;
+
+  }
+
+  // password setter
+  public void ResetPassword(String Password, String newPassword, String oldPassword) {
+
+    authentication(oldPassword);
+
     if (!isValidPassword(newPassword)) {
-      System.out.println("ERROR: Invalide password please change!");
-      return;
+      throw new IllegalArgumentException("Incorrect password format!");
     }
-    this.Password = newPassword;
+
+    this.password = newPassword;
+
   }
 
-  // VALIDATION FOR PROTECTION
+  // Password validation
   boolean isValidPassword(String Password) {
-    if (Password == null || Password.isEmpty()) {
-      return false;
+
+    return Password != null && Password.matches(passwordRegex);
+
+  }
+
+  // Authentication
+  private void authentication(String inputPassword) {
+
+    if (!isValidPassword(inputPassword)) {
+      throw new IllegalArgumentException("Invalide password!");
     }
-    if (!Password.matches(passwordRegex)) {
-      return false;
+
+    if (!inputPassword.equals(password)) {
+      throw new IllegalArgumentException("Incorrect password!");
     }
-    return true;
   }
 }
