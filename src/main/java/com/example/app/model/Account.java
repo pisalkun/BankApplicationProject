@@ -1,5 +1,8 @@
 package com.example.app.model;
 
+import java.util.List;
+import java.util.ArrayList;
+
 public class Account {
   private String accountHolderName;
   private String accountNumber;
@@ -8,6 +11,8 @@ public class Account {
 
   private static String passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
   private static String stringRegex = "^[+-]?\\d*(\\.\\d+)?$";
+
+  private List<Transaction> Transactions = new ArrayList<>();
 
   // Constructor
   public Account(String accountHolderName, String accountNumber, double initializeBalance, String password) {
@@ -48,13 +53,15 @@ public class Account {
 
     balance += amount;
 
+    Transaction t = new Transaction(Transaction.generatId(), accountNumber, "Deposit", amount);
+    Transactions.add(t);
   }
 
   // Withdraw method
   public void Withdraw(String inputAmount, String inputPassword) {
 
     authentication(inputPassword);
-    if (!inputPassword.matches(stringRegex)) {
+    if (!inputAmount.matches(stringRegex)) {
       throw new IllegalArgumentException("Amount should be number only!");
     }
     double amount = Double.parseDouble(inputAmount);
@@ -67,6 +74,18 @@ public class Account {
     }
 
     balance -= amount;
+
+    Transaction t = new Transaction(Transaction.generatId(), accountNumber, "Withdraw", amount);
+    Transactions.add(t);
+  }
+
+  public void ShowTransaction() {
+    if (Transactions.isEmpty()) {
+      throw new IllegalArgumentException("No transaction found!");
+    }
+    for (Transaction t : Transactions) {
+      System.out.println(t);
+    }
   }
 
   // Check balance method
@@ -88,7 +107,7 @@ public class Account {
   }
 
   // password setter
-  public void ResetPassword(String Password, String newPassword, String oldPassword) {
+  public void ResetPassword(String newPassword, String oldPassword) {
 
     authentication(oldPassword);
 
