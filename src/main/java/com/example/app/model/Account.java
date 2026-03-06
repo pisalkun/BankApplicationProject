@@ -63,13 +63,13 @@ public class Account {
     }
 
     if (amount > balance) {
-      throw new IllegalArgumentException("Insuffucient balane!");
+      throw new IllegalArgumentException("Insufficient balance!");
     }
 
     balance -= amount;
   }
 
-  // Check balane method
+  // Check balance method
   public void ShowBalance(String inputPassword) {
 
     authentication(inputPassword);
@@ -111,7 +111,7 @@ public class Account {
   private void authentication(String inputPassword) {
 
     if (!isValidPassword(inputPassword)) {
-      throw new IllegalArgumentException("Invalide password!");
+      throw new IllegalArgumentException("Invalid password!");
     }
 
     if (!inputPassword.equals(password)) {
