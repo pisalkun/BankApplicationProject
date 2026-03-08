@@ -26,7 +26,7 @@ public class Account {
   }
 
   // Getter
-  public String getAccountHolder() {
+  public String getAccountHolderName() {
     return accountHolderName;
   }
 
@@ -34,11 +34,14 @@ public class Account {
     return accountNumber;
   }
 
+  public String getPassword() {
+    return password;
+  }
+
   public double getBalance() {
     return balance;
   }
 
-  // Deposit method
   public void Deposit(String inputAmount, String inputPassword) {
 
     authentication(inputPassword);
