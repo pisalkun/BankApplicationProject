@@ -1,6 +1,7 @@
 package com.example.app.model;
 
 import java.util.List;
+import java.lang.annotation.AnnotationFormatError;
 import java.util.ArrayList;
 
 public class Account {
@@ -42,6 +43,7 @@ public class Account {
     return balance;
   }
 
+  // Deposit method
   public void Deposit(String inputAmount, String inputPassword) {
 
     authentication(inputPassword);
@@ -54,10 +56,13 @@ public class Account {
       throw new IllegalArgumentException("Amount should be positive number!");
     }
 
-    balance += amount;
+    this.exercuteDeposit(amount, "Deposit");
+  }
 
-    Transaction t = new Transaction(Transaction.generatId(), accountNumber, "Deposit", amount);
-    Transactions.add(t);
+  private void exercuteDeposit(double amount, String type) {
+    this.balance += amount;
+    Transaction t = new Transaction(Transaction.generatId(), this.accountNumber, type, amount);
+    this.Transactions.add(t);
   }
 
   // Withdraw method
@@ -72,14 +77,40 @@ public class Account {
       throw new IllegalArgumentException("Amount should be positive number!");
     }
 
-    if (amount > balance) {
+    if (amount > this.balance) {
       throw new IllegalArgumentException("Insufficient balance!");
     }
 
-    balance -= amount;
+    this.exercuteWithdraw(amount, "Withdraw");
+  }
 
-    Transaction t = new Transaction(Transaction.generatId(), accountNumber, "Withdraw", amount);
-    Transactions.add(t);
+  private void exercuteWithdraw(double amount, String type) {
+    this.balance -= amount;
+    Transaction t = new Transaction(Transaction.generatId(), this.accountNumber, type, amount);
+    this.Transactions.add(t);
+  }
+
+  public void Tranfer(String inputAmount, String inputPassword, Account target) {
+    authentication(inputPassword);
+
+    if (!inputAmount.matches(stringRegex)) {
+      throw new IllegalArgumentException("Amount should be number only!");
+    }
+    double amount = Double.parseDouble(inputAmount);
+    if (amount <= 0) {
+      throw new IllegalArgumentException("Amount should be positive number!");
+    }
+
+    if (this.balance <= amount) {
+      throw new IllegalArgumentException("Insufficient balance!");
+    }
+    if (this.getAccountNumber().equals(target.getAccountNumber())) {
+      throw new IllegalArgumentException("Can not tranfer your owrn account!");
+    }
+
+    this.balance -= amount;
+    this.exercuteWithdraw(amount, "Transfer out");
+    target.exercuteDeposit(amount, "Transfer in");
   }
 
   public void ShowTransaction() {
