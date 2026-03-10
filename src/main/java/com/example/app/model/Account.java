@@ -1,7 +1,6 @@
 package com.example.app.model;
 
 import java.util.List;
-import java.lang.annotation.AnnotationFormatError;
 import java.util.ArrayList;
 
 public class Account {
